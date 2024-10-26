@@ -1,26 +1,62 @@
-from pydantic import BaseModel
-from typing import List, Optional
-from .models import StatusEnum
+from pydantic import BaseModel, Field
+from typing import Optional, List
+
+class ContactInfo(BaseModel):
+    email: str
+    phone: str
+    address: str
+    
+    class Config:
+        alias_generator = lambda string: ''.join(
+            word.capitalize() if i else word
+            for i, word in enumerate(string.split('_'))
+        )
+        populate_by_name = True  # Updated for Pydantic v2
 
 class DrivingSessionBase(BaseModel):
-    driver_score: float
-    status: StatusEnum
+    driverScore: int = Field(alias='driver_score')
+    status: str
+
+    class Config:
+        populate_by_name = True  # Updated for Pydantic v2
 
 class DrivingSessionCreate(DrivingSessionBase):
-    customer_id: int
+    customerId: int = Field(alias='customer_id')  # Foreign key to link session to a specific customer
+
+    class Config:
+        populate_by_name = True  # Updated for Pydantic v2
+
+class DrivingSession(DrivingSessionBase):
+    id: int
+    customerId: int = Field(alias='customer_id')
+
+    class Config:
+        from_attributes = True  # Updated for Pydantic v2
+        populate_by_name = True
 
 class CustomerBase(BaseModel):
     name: str
     age: int
-    email: str
-    phone: str
-    address: str
+    contactInfo: ContactInfo = Field(alias='contact_info')
+
+    class Config:
+        populate_by_name = True  # Updated for Pydantic v2
 
 class CustomerCreate(CustomerBase):
     pass
 
+class CustomerUpdate(BaseModel):
+    name: Optional[str] = None
+    age: Optional[int] = None
+    contactInfo: Optional[ContactInfo] = Field(alias='contact_info', default=None)
+
+    class Config:
+        populate_by_name = True  # Updated for Pydantic v2
+
 class Customer(CustomerBase):
     id: int
-    driving_sessions: List[DrivingSessionBase] = []
+    drivingSessions: List[DrivingSession] = Field(alias='driving_sessions', default_factory=list)
+
     class Config:
-        orm_mode = True
+        from_attributes = True  # Updated for Pydantic v2
+        populate_by_name = True
