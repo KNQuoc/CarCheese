@@ -1,0 +1,5 @@
+streamlit
+opencv-python
+google-cloud-vision
+python-dotenv
+google-cloud-vision
