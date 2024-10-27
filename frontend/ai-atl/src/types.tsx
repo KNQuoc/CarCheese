@@ -7,7 +7,7 @@ export interface ContactInfo {
 }
 
 export interface DrivingSession {
-  sessionId: number;
+  id: number;
   driverScore: number;
   status: "Approved" | "Denied" | "Pending";
 }

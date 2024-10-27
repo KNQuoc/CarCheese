@@ -2,11 +2,12 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Float, Enum
 from sqlalchemy.orm import relationship
 from .database import Base
 from enum import Enum as PyEnum
+from backend.database import Base, engine
 
 class StatusEnum(PyEnum):
-    APPROVED = "Approved"
-    DENIED = "Denied"
-    PENDING = "Pending"
+    APPROVED = "APPROVED"
+    DENIED = "DENIED"
+    PENDING = "PENDING"
 
 class Customer(Base):
     __tablename__ = "customers"
@@ -32,3 +33,6 @@ class DrivingSession(Base):
     
     # Relationship
     customer = relationship("Customer", back_populates="driving_sessions")
+
+
+Base.metadata.create_all(engine)

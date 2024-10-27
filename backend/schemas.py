@@ -60,3 +60,18 @@ class Customer(CustomerBase):
     class Config:
         from_attributes = True  # Updated for Pydantic v2
         populate_by_name = True
+
+class ContactInfo(BaseModel):
+    email: str
+    phone: str
+    address: str
+
+class Customer(BaseModel):
+    id: int
+    name: str
+    age: int
+    contactInfo: ContactInfo  # Ensure this is correctly set
+
+    class Config:
+        orm_mode = True
+
